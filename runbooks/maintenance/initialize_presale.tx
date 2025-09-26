@@ -1,0 +1,32 @@
+signer "payer" "svm::secret_key" {
+    description = "Pays fees for program deployments and operations"
+    keypair_json = "~/.config/solana/id.json"
+    // See documentation for other options (mnemonic, etc): https://docs.surfpool.run/iac/svm/signers
+}
+
+signer "authority" "svm::secret_key" {
+    description = "Can upgrade programs and manage critical ops"
+    keypair_json = "~/.config/solana/id.json"
+}
+
+addon "svm" {
+    rpc_api_url = input.rpc_api_url
+    network_id = input.network_id
+}
+
+variable "program" {
+    value = svm::get_program_from_anchor_project("lava_programs")
+}
+
+action "buy_with_sol" "svm::process_instructions" {
+    description = "Buy"
+    instruction {
+        program_idl = variable.program.idl
+        instruction_name = "initialize_presale"
+        instruction_args = [{}]
+        user {
+            public_key = signer.payer.public_key
+        }
+    }
+    signers = [signer.payer]
+}
