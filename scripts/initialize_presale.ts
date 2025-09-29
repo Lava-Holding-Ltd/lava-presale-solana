@@ -1,9 +1,7 @@
 import {
   address,
-  airdropFactory,
   createSolanaClient,
   createTransaction,
-  lamports,
   LAMPORTS_PER_SOL,
   signTransactionMessageWithSigners,
 } from "gill";
@@ -12,12 +10,12 @@ import * as programClient from "../clients/js/src/generated";
 import { USDC_MINT, USDT_MINT } from "./utils";
 
 const { rpc, sendAndConfirmTransaction, simulateTransaction } =
-  createSolanaClient({ urlOrMoniker: "localnet" });
+  createSolanaClient({ urlOrMoniker: "devnet" });
 
 const signer = await loadKeypairSignerFromFile("./keys/authority.json");
 const treasury = address("6dvkrsE8LUGjuaR7oYfUfj1N1Y5jzorQTm1WDcXwWxHm");
 
-const DURATION_IN_SECONDS = 60;
+const DURATION_IN_SECONDS = 6000;
 const now = Math.floor(Date.now() / 1000);
 const end = now + DURATION_IN_SECONDS;
 

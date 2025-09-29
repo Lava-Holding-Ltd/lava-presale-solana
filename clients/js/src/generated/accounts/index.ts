@@ -8,5 +8,5 @@
 
 export * from './presaleConfig';
 export * from './priceUpdateV2';
-export * from './stage';
+export * from './round';
 export * from './userContribution';

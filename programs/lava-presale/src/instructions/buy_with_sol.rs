@@ -1,5 +1,5 @@
 use crate::error::ErrorCode;
-use crate::events::Contributed;
+use crate::events::{Asset, Contributed};
 use crate::{
     PresaleConfig, ReferralData, Round, UserContribution, BASIS_POINTS,
     MAX_CONTRIBUTION_USD_PER_USER, PRESALE_SEED, ROUND_SEED, SOL_DECIMALS,
@@ -175,6 +175,7 @@ pub fn handler(
         amount_referral_bonus_tokens: bonus_tokens,
         contributed_amount_usd,
         referral,
+        asset: Asset::SOL
     });
 
     Ok(())

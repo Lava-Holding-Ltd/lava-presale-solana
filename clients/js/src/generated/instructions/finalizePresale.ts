@@ -30,7 +30,7 @@ import {
   type WritableAccount,
   type WritableSignerAccount,
 } from 'gill';
-import { LAVA_PROGRAMS_PROGRAM_ADDRESS } from '../programs';
+import { LAVA_PRESALE_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 
 export const FINALIZE_PRESALE_DISCRIMINATOR = new Uint8Array([
@@ -44,7 +44,7 @@ export function getFinalizePresaleDiscriminatorBytes() {
 }
 
 export type FinalizePresaleInstruction<
-  TProgram extends string = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  TProgram extends string = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
   TAccountAuthority extends string | AccountMeta<string> = string,
   TAccountPresaleConfig extends string | AccountMeta<string> = string,
   TRemainingAccounts extends readonly AccountMeta<string>[] = [],
@@ -103,7 +103,7 @@ export type FinalizePresaleAsyncInput<
 export async function getFinalizePresaleInstructionAsync<
   TAccountAuthority extends string,
   TAccountPresaleConfig extends string,
-  TProgramAddress extends Address = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  TProgramAddress extends Address = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
 >(
   input: FinalizePresaleAsyncInput<TAccountAuthority, TAccountPresaleConfig>,
   config?: { programAddress?: TProgramAddress }
@@ -115,8 +115,7 @@ export async function getFinalizePresaleInstructionAsync<
   >
 > {
   // Program address.
-  const programAddress =
-    config?.programAddress ?? LAVA_PROGRAMS_PROGRAM_ADDRESS;
+  const programAddress = config?.programAddress ?? LAVA_PRESALE_PROGRAM_ADDRESS;
 
   // Original accounts.
   const originalAccounts = {
@@ -166,7 +165,7 @@ export type FinalizePresaleInput<
 export function getFinalizePresaleInstruction<
   TAccountAuthority extends string,
   TAccountPresaleConfig extends string,
-  TProgramAddress extends Address = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  TProgramAddress extends Address = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
 >(
   input: FinalizePresaleInput<TAccountAuthority, TAccountPresaleConfig>,
   config?: { programAddress?: TProgramAddress }
@@ -176,8 +175,7 @@ export function getFinalizePresaleInstruction<
   TAccountPresaleConfig
 > {
   // Program address.
-  const programAddress =
-    config?.programAddress ?? LAVA_PROGRAMS_PROGRAM_ADDRESS;
+  const programAddress = config?.programAddress ?? LAVA_PRESALE_PROGRAM_ADDRESS;
 
   // Original accounts.
   const originalAccounts = {
@@ -205,7 +203,7 @@ export function getFinalizePresaleInstruction<
 }
 
 export type ParsedFinalizePresaleInstruction<
-  TProgram extends string = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  TProgram extends string = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
   TAccountMetas extends readonly AccountMeta[] = readonly AccountMeta[],
 > = {
   programAddress: Address<TProgram>;

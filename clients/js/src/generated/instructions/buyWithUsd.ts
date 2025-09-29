@@ -39,7 +39,7 @@ import {
   type WritableAccount,
   type WritableSignerAccount,
 } from 'gill';
-import { LAVA_PROGRAMS_PROGRAM_ADDRESS } from '../programs';
+import { LAVA_PRESALE_PROGRAM_ADDRESS } from '../programs';
 import {
   expectAddress,
   getAccountMetaFactory,
@@ -63,12 +63,12 @@ export function getBuyWithUsdDiscriminatorBytes() {
 }
 
 export type BuyWithUsdInstruction<
-  TProgram extends string = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  TProgram extends string = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
   TAccountAuthority extends string | AccountMeta<string> = string,
   TAccountTreasury extends string | AccountMeta<string> = string,
   TAccountUser extends string | AccountMeta<string> = string,
   TAccountPresaleConfig extends string | AccountMeta<string> = string,
-  TAccountActiveStage extends string | AccountMeta<string> = string,
+  TAccountActiveRound extends string | AccountMeta<string> = string,
   TAccountUserContribution extends string | AccountMeta<string> = string,
   TAccountUserAta extends string | AccountMeta<string> = string,
   TAccountTreasuryAta extends string | AccountMeta<string> = string,
@@ -100,9 +100,9 @@ export type BuyWithUsdInstruction<
       TAccountPresaleConfig extends string
         ? ReadonlyAccount<TAccountPresaleConfig>
         : TAccountPresaleConfig,
-      TAccountActiveStage extends string
-        ? ReadonlyAccount<TAccountActiveStage>
-        : TAccountActiveStage,
+      TAccountActiveRound extends string
+        ? ReadonlyAccount<TAccountActiveRound>
+        : TAccountActiveRound,
       TAccountUserContribution extends string
         ? WritableAccount<TAccountUserContribution>
         : TAccountUserContribution,
@@ -173,7 +173,7 @@ export type BuyWithUsdAsyncInput<
   TAccountTreasury extends string = string,
   TAccountUser extends string = string,
   TAccountPresaleConfig extends string = string,
-  TAccountActiveStage extends string = string,
+  TAccountActiveRound extends string = string,
   TAccountUserContribution extends string = string,
   TAccountUserAta extends string = string,
   TAccountTreasuryAta extends string = string,
@@ -186,7 +186,7 @@ export type BuyWithUsdAsyncInput<
   treasury: Address<TAccountTreasury>;
   user: TransactionSigner<TAccountUser>;
   presaleConfig?: Address<TAccountPresaleConfig>;
-  activeStage: Address<TAccountActiveStage>;
+  activeRound: Address<TAccountActiveRound>;
   userContribution?: Address<TAccountUserContribution>;
   userAta?: Address<TAccountUserAta>;
   treasuryAta?: Address<TAccountTreasuryAta>;
@@ -203,7 +203,7 @@ export async function getBuyWithUsdInstructionAsync<
   TAccountTreasury extends string,
   TAccountUser extends string,
   TAccountPresaleConfig extends string,
-  TAccountActiveStage extends string,
+  TAccountActiveRound extends string,
   TAccountUserContribution extends string,
   TAccountUserAta extends string,
   TAccountTreasuryAta extends string,
@@ -211,14 +211,14 @@ export async function getBuyWithUsdInstructionAsync<
   TAccountAssociatedTokenProgram extends string,
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
-  TProgramAddress extends Address = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  TProgramAddress extends Address = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
 >(
   input: BuyWithUsdAsyncInput<
     TAccountAuthority,
     TAccountTreasury,
     TAccountUser,
     TAccountPresaleConfig,
-    TAccountActiveStage,
+    TAccountActiveRound,
     TAccountUserContribution,
     TAccountUserAta,
     TAccountTreasuryAta,
@@ -235,7 +235,7 @@ export async function getBuyWithUsdInstructionAsync<
     TAccountTreasury,
     TAccountUser,
     TAccountPresaleConfig,
-    TAccountActiveStage,
+    TAccountActiveRound,
     TAccountUserContribution,
     TAccountUserAta,
     TAccountTreasuryAta,
@@ -246,8 +246,7 @@ export async function getBuyWithUsdInstructionAsync<
   >
 > {
   // Program address.
-  const programAddress =
-    config?.programAddress ?? LAVA_PROGRAMS_PROGRAM_ADDRESS;
+  const programAddress = config?.programAddress ?? LAVA_PRESALE_PROGRAM_ADDRESS;
 
   // Original accounts.
   const originalAccounts = {
@@ -255,7 +254,7 @@ export async function getBuyWithUsdInstructionAsync<
     treasury: { value: input.treasury ?? null, isWritable: false },
     user: { value: input.user ?? null, isWritable: true },
     presaleConfig: { value: input.presaleConfig ?? null, isWritable: false },
-    activeStage: { value: input.activeStage ?? null, isWritable: false },
+    activeRound: { value: input.activeRound ?? null, isWritable: false },
     userContribution: {
       value: input.userContribution ?? null,
       isWritable: true,
@@ -345,7 +344,7 @@ export async function getBuyWithUsdInstructionAsync<
       getAccountMeta(accounts.treasury),
       getAccountMeta(accounts.user),
       getAccountMeta(accounts.presaleConfig),
-      getAccountMeta(accounts.activeStage),
+      getAccountMeta(accounts.activeRound),
       getAccountMeta(accounts.userContribution),
       getAccountMeta(accounts.userAta),
       getAccountMeta(accounts.treasuryAta),
@@ -364,7 +363,7 @@ export async function getBuyWithUsdInstructionAsync<
     TAccountTreasury,
     TAccountUser,
     TAccountPresaleConfig,
-    TAccountActiveStage,
+    TAccountActiveRound,
     TAccountUserContribution,
     TAccountUserAta,
     TAccountTreasuryAta,
@@ -380,7 +379,7 @@ export type BuyWithUsdInput<
   TAccountTreasury extends string = string,
   TAccountUser extends string = string,
   TAccountPresaleConfig extends string = string,
-  TAccountActiveStage extends string = string,
+  TAccountActiveRound extends string = string,
   TAccountUserContribution extends string = string,
   TAccountUserAta extends string = string,
   TAccountTreasuryAta extends string = string,
@@ -393,7 +392,7 @@ export type BuyWithUsdInput<
   treasury: Address<TAccountTreasury>;
   user: TransactionSigner<TAccountUser>;
   presaleConfig: Address<TAccountPresaleConfig>;
-  activeStage: Address<TAccountActiveStage>;
+  activeRound: Address<TAccountActiveRound>;
   userContribution: Address<TAccountUserContribution>;
   userAta: Address<TAccountUserAta>;
   treasuryAta: Address<TAccountTreasuryAta>;
@@ -410,7 +409,7 @@ export function getBuyWithUsdInstruction<
   TAccountTreasury extends string,
   TAccountUser extends string,
   TAccountPresaleConfig extends string,
-  TAccountActiveStage extends string,
+  TAccountActiveRound extends string,
   TAccountUserContribution extends string,
   TAccountUserAta extends string,
   TAccountTreasuryAta extends string,
@@ -418,14 +417,14 @@ export function getBuyWithUsdInstruction<
   TAccountAssociatedTokenProgram extends string,
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
-  TProgramAddress extends Address = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  TProgramAddress extends Address = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
 >(
   input: BuyWithUsdInput<
     TAccountAuthority,
     TAccountTreasury,
     TAccountUser,
     TAccountPresaleConfig,
-    TAccountActiveStage,
+    TAccountActiveRound,
     TAccountUserContribution,
     TAccountUserAta,
     TAccountTreasuryAta,
@@ -441,7 +440,7 @@ export function getBuyWithUsdInstruction<
   TAccountTreasury,
   TAccountUser,
   TAccountPresaleConfig,
-  TAccountActiveStage,
+  TAccountActiveRound,
   TAccountUserContribution,
   TAccountUserAta,
   TAccountTreasuryAta,
@@ -451,8 +450,7 @@ export function getBuyWithUsdInstruction<
   TAccountSystemProgram
 > {
   // Program address.
-  const programAddress =
-    config?.programAddress ?? LAVA_PROGRAMS_PROGRAM_ADDRESS;
+  const programAddress = config?.programAddress ?? LAVA_PRESALE_PROGRAM_ADDRESS;
 
   // Original accounts.
   const originalAccounts = {
@@ -460,7 +458,7 @@ export function getBuyWithUsdInstruction<
     treasury: { value: input.treasury ?? null, isWritable: false },
     user: { value: input.user ?? null, isWritable: true },
     presaleConfig: { value: input.presaleConfig ?? null, isWritable: false },
-    activeStage: { value: input.activeStage ?? null, isWritable: false },
+    activeRound: { value: input.activeRound ?? null, isWritable: false },
     userContribution: {
       value: input.userContribution ?? null,
       isWritable: true,
@@ -504,7 +502,7 @@ export function getBuyWithUsdInstruction<
       getAccountMeta(accounts.treasury),
       getAccountMeta(accounts.user),
       getAccountMeta(accounts.presaleConfig),
-      getAccountMeta(accounts.activeStage),
+      getAccountMeta(accounts.activeRound),
       getAccountMeta(accounts.userContribution),
       getAccountMeta(accounts.userAta),
       getAccountMeta(accounts.treasuryAta),
@@ -523,7 +521,7 @@ export function getBuyWithUsdInstruction<
     TAccountTreasury,
     TAccountUser,
     TAccountPresaleConfig,
-    TAccountActiveStage,
+    TAccountActiveRound,
     TAccountUserContribution,
     TAccountUserAta,
     TAccountTreasuryAta,
@@ -535,7 +533,7 @@ export function getBuyWithUsdInstruction<
 }
 
 export type ParsedBuyWithUsdInstruction<
-  TProgram extends string = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  TProgram extends string = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
   TAccountMetas extends readonly AccountMeta[] = readonly AccountMeta[],
 > = {
   programAddress: Address<TProgram>;
@@ -544,7 +542,7 @@ export type ParsedBuyWithUsdInstruction<
     treasury: TAccountMetas[1];
     user: TAccountMetas[2];
     presaleConfig: TAccountMetas[3];
-    activeStage: TAccountMetas[4];
+    activeRound: TAccountMetas[4];
     userContribution: TAccountMetas[5];
     userAta: TAccountMetas[6];
     treasuryAta: TAccountMetas[7];
@@ -581,7 +579,7 @@ export function parseBuyWithUsdInstruction<
       treasury: getNextAccount(),
       user: getNextAccount(),
       presaleConfig: getNextAccount(),
-      activeStage: getNextAccount(),
+      activeRound: getNextAccount(),
       userContribution: getNextAccount(),
       userAta: getNextAccount(),
       treasuryAta: getNextAccount(),

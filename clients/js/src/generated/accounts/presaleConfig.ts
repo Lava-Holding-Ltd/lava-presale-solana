@@ -53,7 +53,7 @@ export type PresaleConfig = {
   discriminator: ReadonlyUint8Array;
   authority: Address;
   treasury: Address;
-  currentStage: number;
+  currentRound: number;
   finalized: boolean;
   bump: number;
 };
@@ -61,7 +61,7 @@ export type PresaleConfig = {
 export type PresaleConfigArgs = {
   authority: Address;
   treasury: Address;
-  currentStage: number;
+  currentRound: number;
   finalized: boolean;
   bump: number;
 };
@@ -72,7 +72,7 @@ export function getPresaleConfigEncoder(): FixedSizeEncoder<PresaleConfigArgs> {
       ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
       ['authority', getAddressEncoder()],
       ['treasury', getAddressEncoder()],
-      ['currentStage', getU8Encoder()],
+      ['currentRound', getU8Encoder()],
       ['finalized', getBooleanEncoder()],
       ['bump', getU8Encoder()],
     ]),
@@ -85,7 +85,7 @@ export function getPresaleConfigDecoder(): FixedSizeDecoder<PresaleConfig> {
     ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
     ['authority', getAddressDecoder()],
     ['treasury', getAddressDecoder()],
-    ['currentStage', getU8Decoder()],
+    ['currentRound', getU8Decoder()],
     ['finalized', getBooleanDecoder()],
     ['bump', getU8Decoder()],
   ]);

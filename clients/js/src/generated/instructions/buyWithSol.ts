@@ -39,7 +39,7 @@ import {
   type WritableAccount,
   type WritableSignerAccount,
 } from 'gill';
-import { LAVA_PROGRAMS_PROGRAM_ADDRESS } from '../programs';
+import { LAVA_PRESALE_PROGRAM_ADDRESS } from '../programs';
 import {
   expectAddress,
   getAccountMetaFactory,
@@ -63,12 +63,12 @@ export function getBuyWithSolDiscriminatorBytes() {
 }
 
 export type BuyWithSolInstruction<
-  TProgram extends string = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  TProgram extends string = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
   TAccountAuthority extends string | AccountMeta<string> = string,
   TAccountTreasury extends string | AccountMeta<string> = string,
   TAccountUser extends string | AccountMeta<string> = string,
   TAccountPresaleConfig extends string | AccountMeta<string> = string,
-  TAccountActiveStage extends string | AccountMeta<string> = string,
+  TAccountActiveRound extends string | AccountMeta<string> = string,
   TAccountUserContribution extends string | AccountMeta<string> = string,
   TAccountPriceUpdate extends
     | string
@@ -94,9 +94,9 @@ export type BuyWithSolInstruction<
       TAccountPresaleConfig extends string
         ? ReadonlyAccount<TAccountPresaleConfig>
         : TAccountPresaleConfig,
-      TAccountActiveStage extends string
-        ? ReadonlyAccount<TAccountActiveStage>
-        : TAccountActiveStage,
+      TAccountActiveRound extends string
+        ? ReadonlyAccount<TAccountActiveRound>
+        : TAccountActiveRound,
       TAccountUserContribution extends string
         ? WritableAccount<TAccountUserContribution>
         : TAccountUserContribution,
@@ -155,7 +155,7 @@ export type BuyWithSolAsyncInput<
   TAccountTreasury extends string = string,
   TAccountUser extends string = string,
   TAccountPresaleConfig extends string = string,
-  TAccountActiveStage extends string = string,
+  TAccountActiveRound extends string = string,
   TAccountUserContribution extends string = string,
   TAccountPriceUpdate extends string = string,
   TAccountSystemProgram extends string = string,
@@ -164,7 +164,7 @@ export type BuyWithSolAsyncInput<
   treasury: Address<TAccountTreasury>;
   user: TransactionSigner<TAccountUser>;
   presaleConfig?: Address<TAccountPresaleConfig>;
-  activeStage: Address<TAccountActiveStage>;
+  activeRound: Address<TAccountActiveRound>;
   userContribution?: Address<TAccountUserContribution>;
   priceUpdate?: Address<TAccountPriceUpdate>;
   systemProgram?: Address<TAccountSystemProgram>;
@@ -177,18 +177,18 @@ export async function getBuyWithSolInstructionAsync<
   TAccountTreasury extends string,
   TAccountUser extends string,
   TAccountPresaleConfig extends string,
-  TAccountActiveStage extends string,
+  TAccountActiveRound extends string,
   TAccountUserContribution extends string,
   TAccountPriceUpdate extends string,
   TAccountSystemProgram extends string,
-  TProgramAddress extends Address = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  TProgramAddress extends Address = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
 >(
   input: BuyWithSolAsyncInput<
     TAccountAuthority,
     TAccountTreasury,
     TAccountUser,
     TAccountPresaleConfig,
-    TAccountActiveStage,
+    TAccountActiveRound,
     TAccountUserContribution,
     TAccountPriceUpdate,
     TAccountSystemProgram
@@ -201,15 +201,14 @@ export async function getBuyWithSolInstructionAsync<
     TAccountTreasury,
     TAccountUser,
     TAccountPresaleConfig,
-    TAccountActiveStage,
+    TAccountActiveRound,
     TAccountUserContribution,
     TAccountPriceUpdate,
     TAccountSystemProgram
   >
 > {
   // Program address.
-  const programAddress =
-    config?.programAddress ?? LAVA_PROGRAMS_PROGRAM_ADDRESS;
+  const programAddress = config?.programAddress ?? LAVA_PRESALE_PROGRAM_ADDRESS;
 
   // Original accounts.
   const originalAccounts = {
@@ -217,7 +216,7 @@ export async function getBuyWithSolInstructionAsync<
     treasury: { value: input.treasury ?? null, isWritable: true },
     user: { value: input.user ?? null, isWritable: true },
     presaleConfig: { value: input.presaleConfig ?? null, isWritable: false },
-    activeStage: { value: input.activeStage ?? null, isWritable: false },
+    activeRound: { value: input.activeRound ?? null, isWritable: false },
     userContribution: {
       value: input.userContribution ?? null,
       isWritable: true,
@@ -274,7 +273,7 @@ export async function getBuyWithSolInstructionAsync<
       getAccountMeta(accounts.treasury),
       getAccountMeta(accounts.user),
       getAccountMeta(accounts.presaleConfig),
-      getAccountMeta(accounts.activeStage),
+      getAccountMeta(accounts.activeRound),
       getAccountMeta(accounts.userContribution),
       getAccountMeta(accounts.priceUpdate),
       getAccountMeta(accounts.systemProgram),
@@ -289,7 +288,7 @@ export async function getBuyWithSolInstructionAsync<
     TAccountTreasury,
     TAccountUser,
     TAccountPresaleConfig,
-    TAccountActiveStage,
+    TAccountActiveRound,
     TAccountUserContribution,
     TAccountPriceUpdate,
     TAccountSystemProgram
@@ -301,7 +300,7 @@ export type BuyWithSolInput<
   TAccountTreasury extends string = string,
   TAccountUser extends string = string,
   TAccountPresaleConfig extends string = string,
-  TAccountActiveStage extends string = string,
+  TAccountActiveRound extends string = string,
   TAccountUserContribution extends string = string,
   TAccountPriceUpdate extends string = string,
   TAccountSystemProgram extends string = string,
@@ -310,7 +309,7 @@ export type BuyWithSolInput<
   treasury: Address<TAccountTreasury>;
   user: TransactionSigner<TAccountUser>;
   presaleConfig: Address<TAccountPresaleConfig>;
-  activeStage: Address<TAccountActiveStage>;
+  activeRound: Address<TAccountActiveRound>;
   userContribution: Address<TAccountUserContribution>;
   priceUpdate?: Address<TAccountPriceUpdate>;
   systemProgram?: Address<TAccountSystemProgram>;
@@ -323,18 +322,18 @@ export function getBuyWithSolInstruction<
   TAccountTreasury extends string,
   TAccountUser extends string,
   TAccountPresaleConfig extends string,
-  TAccountActiveStage extends string,
+  TAccountActiveRound extends string,
   TAccountUserContribution extends string,
   TAccountPriceUpdate extends string,
   TAccountSystemProgram extends string,
-  TProgramAddress extends Address = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  TProgramAddress extends Address = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
 >(
   input: BuyWithSolInput<
     TAccountAuthority,
     TAccountTreasury,
     TAccountUser,
     TAccountPresaleConfig,
-    TAccountActiveStage,
+    TAccountActiveRound,
     TAccountUserContribution,
     TAccountPriceUpdate,
     TAccountSystemProgram
@@ -346,14 +345,13 @@ export function getBuyWithSolInstruction<
   TAccountTreasury,
   TAccountUser,
   TAccountPresaleConfig,
-  TAccountActiveStage,
+  TAccountActiveRound,
   TAccountUserContribution,
   TAccountPriceUpdate,
   TAccountSystemProgram
 > {
   // Program address.
-  const programAddress =
-    config?.programAddress ?? LAVA_PROGRAMS_PROGRAM_ADDRESS;
+  const programAddress = config?.programAddress ?? LAVA_PRESALE_PROGRAM_ADDRESS;
 
   // Original accounts.
   const originalAccounts = {
@@ -361,7 +359,7 @@ export function getBuyWithSolInstruction<
     treasury: { value: input.treasury ?? null, isWritable: true },
     user: { value: input.user ?? null, isWritable: true },
     presaleConfig: { value: input.presaleConfig ?? null, isWritable: false },
-    activeStage: { value: input.activeStage ?? null, isWritable: false },
+    activeRound: { value: input.activeRound ?? null, isWritable: false },
     userContribution: {
       value: input.userContribution ?? null,
       isWritable: true,
@@ -394,7 +392,7 @@ export function getBuyWithSolInstruction<
       getAccountMeta(accounts.treasury),
       getAccountMeta(accounts.user),
       getAccountMeta(accounts.presaleConfig),
-      getAccountMeta(accounts.activeStage),
+      getAccountMeta(accounts.activeRound),
       getAccountMeta(accounts.userContribution),
       getAccountMeta(accounts.priceUpdate),
       getAccountMeta(accounts.systemProgram),
@@ -409,7 +407,7 @@ export function getBuyWithSolInstruction<
     TAccountTreasury,
     TAccountUser,
     TAccountPresaleConfig,
-    TAccountActiveStage,
+    TAccountActiveRound,
     TAccountUserContribution,
     TAccountPriceUpdate,
     TAccountSystemProgram
@@ -417,7 +415,7 @@ export function getBuyWithSolInstruction<
 }
 
 export type ParsedBuyWithSolInstruction<
-  TProgram extends string = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  TProgram extends string = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
   TAccountMetas extends readonly AccountMeta[] = readonly AccountMeta[],
 > = {
   programAddress: Address<TProgram>;
@@ -426,7 +424,7 @@ export type ParsedBuyWithSolInstruction<
     treasury: TAccountMetas[1];
     user: TAccountMetas[2];
     presaleConfig: TAccountMetas[3];
-    activeStage: TAccountMetas[4];
+    activeRound: TAccountMetas[4];
     userContribution: TAccountMetas[5];
     priceUpdate: TAccountMetas[6];
     systemProgram: TAccountMetas[7];
@@ -459,7 +457,7 @@ export function parseBuyWithSolInstruction<
       treasury: getNextAccount(),
       user: getNextAccount(),
       presaleConfig: getNextAccount(),
-      activeStage: getNextAccount(),
+      activeRound: getNextAccount(),
       userContribution: getNextAccount(),
       priceUpdate: getNextAccount(),
       systemProgram: getNextAccount(),

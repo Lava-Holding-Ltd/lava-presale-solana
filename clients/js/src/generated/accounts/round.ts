@@ -39,49 +39,49 @@ import {
   type ReadonlyUint8Array,
 } from 'gill';
 
-export const STAGE_DISCRIMINATOR = new Uint8Array([
-  128, 95, 240, 157, 209, 159, 69, 179,
+export const ROUND_DISCRIMINATOR = new Uint8Array([
+  87, 127, 165, 51, 73, 78, 116, 174,
 ]);
 
-export function getStageDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(STAGE_DISCRIMINATOR);
+export function getRoundDiscriminatorBytes() {
+  return fixEncoderSize(getBytesEncoder(), 8).encode(ROUND_DISCRIMINATOR);
 }
 
-export type Stage = {
+export type Round = {
   discriminator: ReadonlyUint8Array;
-  stageId: number;
+  roundId: number;
   tokenPriceUsd: bigint;
   startTime: bigint;
   endTime: bigint;
   bump: number;
 };
 
-export type StageArgs = {
-  stageId: number;
+export type RoundArgs = {
+  roundId: number;
   tokenPriceUsd: number | bigint;
   startTime: number | bigint;
   endTime: number | bigint;
   bump: number;
 };
 
-export function getStageEncoder(): FixedSizeEncoder<StageArgs> {
+export function getRoundEncoder(): FixedSizeEncoder<RoundArgs> {
   return transformEncoder(
     getStructEncoder([
       ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
-      ['stageId', getU8Encoder()],
+      ['roundId', getU8Encoder()],
       ['tokenPriceUsd', getU64Encoder()],
       ['startTime', getI64Encoder()],
       ['endTime', getI64Encoder()],
       ['bump', getU8Encoder()],
     ]),
-    (value) => ({ ...value, discriminator: STAGE_DISCRIMINATOR })
+    (value) => ({ ...value, discriminator: ROUND_DISCRIMINATOR })
   );
 }
 
-export function getStageDecoder(): FixedSizeDecoder<Stage> {
+export function getRoundDecoder(): FixedSizeDecoder<Round> {
   return getStructDecoder([
     ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
-    ['stageId', getU8Decoder()],
+    ['roundId', getU8Decoder()],
     ['tokenPriceUsd', getU64Decoder()],
     ['startTime', getI64Decoder()],
     ['endTime', getI64Decoder()],
@@ -89,63 +89,63 @@ export function getStageDecoder(): FixedSizeDecoder<Stage> {
   ]);
 }
 
-export function getStageCodec(): FixedSizeCodec<StageArgs, Stage> {
-  return combineCodec(getStageEncoder(), getStageDecoder());
+export function getRoundCodec(): FixedSizeCodec<RoundArgs, Round> {
+  return combineCodec(getRoundEncoder(), getRoundDecoder());
 }
 
-export function decodeStage<TAddress extends string = string>(
+export function decodeRound<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>
-): Account<Stage, TAddress>;
-export function decodeStage<TAddress extends string = string>(
+): Account<Round, TAddress>;
+export function decodeRound<TAddress extends string = string>(
   encodedAccount: MaybeEncodedAccount<TAddress>
-): MaybeAccount<Stage, TAddress>;
-export function decodeStage<TAddress extends string = string>(
+): MaybeAccount<Round, TAddress>;
+export function decodeRound<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
-): Account<Stage, TAddress> | MaybeAccount<Stage, TAddress> {
+): Account<Round, TAddress> | MaybeAccount<Round, TAddress> {
   return decodeAccount(
     encodedAccount as MaybeEncodedAccount<TAddress>,
-    getStageDecoder()
+    getRoundDecoder()
   );
 }
 
-export async function fetchStage<TAddress extends string = string>(
+export async function fetchRound<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<Account<Stage, TAddress>> {
-  const maybeAccount = await fetchMaybeStage(rpc, address, config);
+): Promise<Account<Round, TAddress>> {
+  const maybeAccount = await fetchMaybeRound(rpc, address, config);
   assertAccountExists(maybeAccount);
   return maybeAccount;
 }
 
-export async function fetchMaybeStage<TAddress extends string = string>(
+export async function fetchMaybeRound<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<MaybeAccount<Stage, TAddress>> {
+): Promise<MaybeAccount<Round, TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
-  return decodeStage(maybeAccount);
+  return decodeRound(maybeAccount);
 }
 
-export async function fetchAllStage(
+export async function fetchAllRound(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<Account<Stage>[]> {
-  const maybeAccounts = await fetchAllMaybeStage(rpc, addresses, config);
+): Promise<Account<Round>[]> {
+  const maybeAccounts = await fetchAllMaybeRound(rpc, addresses, config);
   assertAccountsExist(maybeAccounts);
   return maybeAccounts;
 }
 
-export async function fetchAllMaybeStage(
+export async function fetchAllMaybeRound(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<MaybeAccount<Stage>[]> {
+): Promise<MaybeAccount<Round>[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
-  return maybeAccounts.map((maybeAccount) => decodeStage(maybeAccount));
+  return maybeAccounts.map((maybeAccount) => decodeRound(maybeAccount));
 }
 
-export function getStageSize(): number {
+export function getRoundSize(): number {
   return 34;
 }

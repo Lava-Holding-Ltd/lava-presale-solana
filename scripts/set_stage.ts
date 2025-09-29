@@ -11,36 +11,35 @@ import {
 } from "gill";
 import { loadKeypairSignerFromFile } from "gill/node";
 import * as programClient from "../clients/js/src/generated";
-
 const {
   rpc,
   sendAndConfirmTransaction,
   simulateTransaction,
   rpcSubscriptions,
-} = createSolanaClient({ urlOrMoniker: "localnet" });
+} = createSolanaClient({ urlOrMoniker: "devnet" });
 
 const [configAddress] = await getProgramDerivedAddress({
-  programAddress: programClient.LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  programAddress: programClient.LAVA_PRESALE_PROGRAM_ADDRESS,
   seeds: ["presale"],
 });
 
 const config = await programClient.fetchPresaleConfig(rpc, configAddress);
 
 const [newStageAddress] = await getProgramDerivedAddress({
-  seeds: ["stage", getU8Encoder().encode(config.data.currentStage + 1)],
-  programAddress: programClient.LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  seeds: ["stage", getU8Encoder().encode(config.data.currentRound + 1)],
+  programAddress: programClient.LAVA_PRESALE_PROGRAM_ADDRESS,
 });
 
 const signer = await loadKeypairSignerFromFile("./keys/authority.json");
 
-const DURATION_IN_SECONDS = 1;
+const DURATION_IN_SECONDS = 10000;
 const now = Math.floor(Date.now() / 1000);
 const end = now + DURATION_IN_SECONDS;
 
-const set_stage_ix = await programClient.getSetStageInstructionAsync({
+const set_stage_ix = await programClient.getSetNewRoundInstructionAsync({
   authority: signer,
-  stage: newStageAddress,
-  newStage: {
+  round: newStageAddress,
+  newRound: {
     tokenPriceUsd: 12_250,
     startTime: now,
     endTime: end,

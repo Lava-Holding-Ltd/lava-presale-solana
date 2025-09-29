@@ -32,17 +32,17 @@ import {
   type WritableAccount,
   type WritableSignerAccount,
 } from 'gill';
-import { LAVA_PROGRAMS_PROGRAM_ADDRESS } from '../programs';
+import { LAVA_PRESALE_PROGRAM_ADDRESS } from '../programs';
 import {
   expectAddress,
   getAccountMetaFactory,
   type ResolvedAccount,
 } from '../shared';
 import {
-  getCreateStageDataDecoder,
-  getCreateStageDataEncoder,
-  type CreateStageData,
-  type CreateStageDataArgs,
+  getCreateRoundDataDecoder,
+  getCreateRoundDataEncoder,
+  type CreateRoundData,
+  type CreateRoundDataArgs,
 } from '../types';
 
 export const INITIALIZE_PRESALE_DISCRIMINATOR = new Uint8Array([
@@ -56,10 +56,12 @@ export function getInitializePresaleDiscriminatorBytes() {
 }
 
 export type InitializePresaleInstruction<
-  TProgram extends string = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
-  TAccountAuthority extends string | AccountMeta<string> = string,
+  TProgram extends string = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
+  TAccountAuthority extends
+    | string
+    | AccountMeta<string> = '9YS6irKCxBYmYX28ifG25c8CvrKi4cmNDDptZvBxELF',
   TAccountPresaleConfig extends string | AccountMeta<string> = string,
-  TAccountStage extends string | AccountMeta<string> = string,
+  TAccountRound extends string | AccountMeta<string> = string,
   TAccountTreasury extends string | AccountMeta<string> = string,
   TAccountTreasuryUsdcAta extends string | AccountMeta<string> = string,
   TAccountTreasuryUsdtAta extends string | AccountMeta<string> = string,
@@ -90,9 +92,9 @@ export type InitializePresaleInstruction<
       TAccountPresaleConfig extends string
         ? WritableAccount<TAccountPresaleConfig>
         : TAccountPresaleConfig,
-      TAccountStage extends string
-        ? WritableAccount<TAccountStage>
-        : TAccountStage,
+      TAccountRound extends string
+        ? WritableAccount<TAccountRound>
+        : TAccountRound,
       TAccountTreasury extends string
         ? ReadonlyAccount<TAccountTreasury>
         : TAccountTreasury,
@@ -123,18 +125,18 @@ export type InitializePresaleInstruction<
 
 export type InitializePresaleInstructionData = {
   discriminator: ReadonlyUint8Array;
-  firstStage: CreateStageData;
+  firstStage: CreateRoundData;
 };
 
 export type InitializePresaleInstructionDataArgs = {
-  firstStage: CreateStageDataArgs;
+  firstStage: CreateRoundDataArgs;
 };
 
 export function getInitializePresaleInstructionDataEncoder(): FixedSizeEncoder<InitializePresaleInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([
       ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
-      ['firstStage', getCreateStageDataEncoder()],
+      ['firstStage', getCreateRoundDataEncoder()],
     ]),
     (value) => ({ ...value, discriminator: INITIALIZE_PRESALE_DISCRIMINATOR })
   );
@@ -143,7 +145,7 @@ export function getInitializePresaleInstructionDataEncoder(): FixedSizeEncoder<I
 export function getInitializePresaleInstructionDataDecoder(): FixedSizeDecoder<InitializePresaleInstructionData> {
   return getStructDecoder([
     ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
-    ['firstStage', getCreateStageDataDecoder()],
+    ['firstStage', getCreateRoundDataDecoder()],
   ]);
 }
 
@@ -160,7 +162,7 @@ export function getInitializePresaleInstructionDataCodec(): FixedSizeCodec<
 export type InitializePresaleAsyncInput<
   TAccountAuthority extends string = string,
   TAccountPresaleConfig extends string = string,
-  TAccountStage extends string = string,
+  TAccountRound extends string = string,
   TAccountTreasury extends string = string,
   TAccountTreasuryUsdcAta extends string = string,
   TAccountTreasuryUsdtAta extends string = string,
@@ -170,9 +172,9 @@ export type InitializePresaleAsyncInput<
   TAccountTokenProgram extends string = string,
   TAccountSystemProgram extends string = string,
 > = {
-  authority: TransactionSigner<TAccountAuthority>;
+  authority?: TransactionSigner<TAccountAuthority>;
   presaleConfig?: Address<TAccountPresaleConfig>;
-  stage?: Address<TAccountStage>;
+  round?: Address<TAccountRound>;
   treasury: Address<TAccountTreasury>;
   treasuryUsdcAta?: Address<TAccountTreasuryUsdcAta>;
   treasuryUsdtAta?: Address<TAccountTreasuryUsdtAta>;
@@ -187,7 +189,7 @@ export type InitializePresaleAsyncInput<
 export async function getInitializePresaleInstructionAsync<
   TAccountAuthority extends string,
   TAccountPresaleConfig extends string,
-  TAccountStage extends string,
+  TAccountRound extends string,
   TAccountTreasury extends string,
   TAccountTreasuryUsdcAta extends string,
   TAccountTreasuryUsdtAta extends string,
@@ -196,12 +198,12 @@ export async function getInitializePresaleInstructionAsync<
   TAccountAssociatedTokenProgram extends string,
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
-  TProgramAddress extends Address = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  TProgramAddress extends Address = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
 >(
   input: InitializePresaleAsyncInput<
     TAccountAuthority,
     TAccountPresaleConfig,
-    TAccountStage,
+    TAccountRound,
     TAccountTreasury,
     TAccountTreasuryUsdcAta,
     TAccountTreasuryUsdtAta,
@@ -217,7 +219,7 @@ export async function getInitializePresaleInstructionAsync<
     TProgramAddress,
     TAccountAuthority,
     TAccountPresaleConfig,
-    TAccountStage,
+    TAccountRound,
     TAccountTreasury,
     TAccountTreasuryUsdcAta,
     TAccountTreasuryUsdtAta,
@@ -229,14 +231,13 @@ export async function getInitializePresaleInstructionAsync<
   >
 > {
   // Program address.
-  const programAddress =
-    config?.programAddress ?? LAVA_PROGRAMS_PROGRAM_ADDRESS;
+  const programAddress = config?.programAddress ?? LAVA_PRESALE_PROGRAM_ADDRESS;
 
   // Original accounts.
   const originalAccounts = {
     authority: { value: input.authority ?? null, isWritable: true },
     presaleConfig: { value: input.presaleConfig ?? null, isWritable: true },
-    stage: { value: input.stage ?? null, isWritable: true },
+    round: { value: input.round ?? null, isWritable: true },
     treasury: { value: input.treasury ?? null, isWritable: false },
     treasuryUsdcAta: { value: input.treasuryUsdcAta ?? null, isWritable: true },
     treasuryUsdtAta: { value: input.treasuryUsdtAta ?? null, isWritable: true },
@@ -258,6 +259,10 @@ export async function getInitializePresaleInstructionAsync<
   const args = { ...input };
 
   // Resolve default values.
+  if (!accounts.authority.value) {
+    accounts.authority.value =
+      '9YS6irKCxBYmYX28ifG25c8CvrKi4cmNDDptZvBxELF' as Address<'9YS6irKCxBYmYX28ifG25c8CvrKi4cmNDDptZvBxELF'>;
+  }
   if (!accounts.presaleConfig.value) {
     accounts.presaleConfig.value = await getProgramDerivedAddress({
       programAddress,
@@ -268,12 +273,12 @@ export async function getInitializePresaleInstructionAsync<
       ],
     });
   }
-  if (!accounts.stage.value) {
-    accounts.stage.value = await getProgramDerivedAddress({
+  if (!accounts.round.value) {
+    accounts.round.value = await getProgramDerivedAddress({
       programAddress,
       seeds: [
         getBytesEncoder().encode(new Uint8Array([115, 116, 97, 103, 101])),
-        getBytesEncoder().encode(new Uint8Array([0])),
+        getBytesEncoder().encode(new Uint8Array([1])),
       ],
     });
   }
@@ -325,7 +330,7 @@ export async function getInitializePresaleInstructionAsync<
     accounts: [
       getAccountMeta(accounts.authority),
       getAccountMeta(accounts.presaleConfig),
-      getAccountMeta(accounts.stage),
+      getAccountMeta(accounts.round),
       getAccountMeta(accounts.treasury),
       getAccountMeta(accounts.treasuryUsdcAta),
       getAccountMeta(accounts.treasuryUsdtAta),
@@ -343,7 +348,7 @@ export async function getInitializePresaleInstructionAsync<
     TProgramAddress,
     TAccountAuthority,
     TAccountPresaleConfig,
-    TAccountStage,
+    TAccountRound,
     TAccountTreasury,
     TAccountTreasuryUsdcAta,
     TAccountTreasuryUsdtAta,
@@ -358,7 +363,7 @@ export async function getInitializePresaleInstructionAsync<
 export type InitializePresaleInput<
   TAccountAuthority extends string = string,
   TAccountPresaleConfig extends string = string,
-  TAccountStage extends string = string,
+  TAccountRound extends string = string,
   TAccountTreasury extends string = string,
   TAccountTreasuryUsdcAta extends string = string,
   TAccountTreasuryUsdtAta extends string = string,
@@ -368,9 +373,9 @@ export type InitializePresaleInput<
   TAccountTokenProgram extends string = string,
   TAccountSystemProgram extends string = string,
 > = {
-  authority: TransactionSigner<TAccountAuthority>;
+  authority?: TransactionSigner<TAccountAuthority>;
   presaleConfig: Address<TAccountPresaleConfig>;
-  stage: Address<TAccountStage>;
+  round: Address<TAccountRound>;
   treasury: Address<TAccountTreasury>;
   treasuryUsdcAta: Address<TAccountTreasuryUsdcAta>;
   treasuryUsdtAta: Address<TAccountTreasuryUsdtAta>;
@@ -385,7 +390,7 @@ export type InitializePresaleInput<
 export function getInitializePresaleInstruction<
   TAccountAuthority extends string,
   TAccountPresaleConfig extends string,
-  TAccountStage extends string,
+  TAccountRound extends string,
   TAccountTreasury extends string,
   TAccountTreasuryUsdcAta extends string,
   TAccountTreasuryUsdtAta extends string,
@@ -394,12 +399,12 @@ export function getInitializePresaleInstruction<
   TAccountAssociatedTokenProgram extends string,
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
-  TProgramAddress extends Address = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  TProgramAddress extends Address = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
 >(
   input: InitializePresaleInput<
     TAccountAuthority,
     TAccountPresaleConfig,
-    TAccountStage,
+    TAccountRound,
     TAccountTreasury,
     TAccountTreasuryUsdcAta,
     TAccountTreasuryUsdtAta,
@@ -414,7 +419,7 @@ export function getInitializePresaleInstruction<
   TProgramAddress,
   TAccountAuthority,
   TAccountPresaleConfig,
-  TAccountStage,
+  TAccountRound,
   TAccountTreasury,
   TAccountTreasuryUsdcAta,
   TAccountTreasuryUsdtAta,
@@ -425,14 +430,13 @@ export function getInitializePresaleInstruction<
   TAccountSystemProgram
 > {
   // Program address.
-  const programAddress =
-    config?.programAddress ?? LAVA_PROGRAMS_PROGRAM_ADDRESS;
+  const programAddress = config?.programAddress ?? LAVA_PRESALE_PROGRAM_ADDRESS;
 
   // Original accounts.
   const originalAccounts = {
     authority: { value: input.authority ?? null, isWritable: true },
     presaleConfig: { value: input.presaleConfig ?? null, isWritable: true },
-    stage: { value: input.stage ?? null, isWritable: true },
+    round: { value: input.round ?? null, isWritable: true },
     treasury: { value: input.treasury ?? null, isWritable: false },
     treasuryUsdcAta: { value: input.treasuryUsdcAta ?? null, isWritable: true },
     treasuryUsdtAta: { value: input.treasuryUsdtAta ?? null, isWritable: true },
@@ -454,6 +458,10 @@ export function getInitializePresaleInstruction<
   const args = { ...input };
 
   // Resolve default values.
+  if (!accounts.authority.value) {
+    accounts.authority.value =
+      '9YS6irKCxBYmYX28ifG25c8CvrKi4cmNDDptZvBxELF' as Address<'9YS6irKCxBYmYX28ifG25c8CvrKi4cmNDDptZvBxELF'>;
+  }
   if (!accounts.tokenProgram.value) {
     accounts.tokenProgram.value =
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
@@ -480,7 +488,7 @@ export function getInitializePresaleInstruction<
     accounts: [
       getAccountMeta(accounts.authority),
       getAccountMeta(accounts.presaleConfig),
-      getAccountMeta(accounts.stage),
+      getAccountMeta(accounts.round),
       getAccountMeta(accounts.treasury),
       getAccountMeta(accounts.treasuryUsdcAta),
       getAccountMeta(accounts.treasuryUsdtAta),
@@ -498,7 +506,7 @@ export function getInitializePresaleInstruction<
     TProgramAddress,
     TAccountAuthority,
     TAccountPresaleConfig,
-    TAccountStage,
+    TAccountRound,
     TAccountTreasury,
     TAccountTreasuryUsdcAta,
     TAccountTreasuryUsdtAta,
@@ -511,14 +519,14 @@ export function getInitializePresaleInstruction<
 }
 
 export type ParsedInitializePresaleInstruction<
-  TProgram extends string = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  TProgram extends string = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
   TAccountMetas extends readonly AccountMeta[] = readonly AccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
     authority: TAccountMetas[0];
     presaleConfig: TAccountMetas[1];
-    stage: TAccountMetas[2];
+    round: TAccountMetas[2];
     treasury: TAccountMetas[3];
     treasuryUsdcAta: TAccountMetas[4];
     treasuryUsdtAta: TAccountMetas[5];
@@ -554,7 +562,7 @@ export function parseInitializePresaleInstruction<
     accounts: {
       authority: getNextAccount(),
       presaleConfig: getNextAccount(),
-      stage: getNextAccount(),
+      round: getNextAccount(),
       treasury: getNextAccount(),
       treasuryUsdcAta: getNextAccount(),
       treasuryUsdtAta: getNextAccount(),

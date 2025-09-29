@@ -19,19 +19,19 @@ import {
   type FixedSizeEncoder,
 } from 'gill';
 
-export type CreateStageData = {
+export type CreateRoundData = {
   tokenPriceUsd: bigint;
   startTime: bigint;
   endTime: bigint;
 };
 
-export type CreateStageDataArgs = {
+export type CreateRoundDataArgs = {
   tokenPriceUsd: number | bigint;
   startTime: number | bigint;
   endTime: number | bigint;
 };
 
-export function getCreateStageDataEncoder(): FixedSizeEncoder<CreateStageDataArgs> {
+export function getCreateRoundDataEncoder(): FixedSizeEncoder<CreateRoundDataArgs> {
   return getStructEncoder([
     ['tokenPriceUsd', getU64Encoder()],
     ['startTime', getI64Encoder()],
@@ -39,7 +39,7 @@ export function getCreateStageDataEncoder(): FixedSizeEncoder<CreateStageDataArg
   ]);
 }
 
-export function getCreateStageDataDecoder(): FixedSizeDecoder<CreateStageData> {
+export function getCreateRoundDataDecoder(): FixedSizeDecoder<CreateRoundData> {
   return getStructDecoder([
     ['tokenPriceUsd', getU64Decoder()],
     ['startTime', getI64Decoder()],
@@ -47,9 +47,9 @@ export function getCreateStageDataDecoder(): FixedSizeDecoder<CreateStageData> {
   ]);
 }
 
-export function getCreateStageDataCodec(): FixedSizeCodec<
-  CreateStageDataArgs,
-  CreateStageData
+export function getCreateRoundDataCodec(): FixedSizeCodec<
+  CreateRoundDataArgs,
+  CreateRoundData
 > {
-  return combineCodec(getCreateStageDataEncoder(), getCreateStageDataDecoder());
+  return combineCodec(getCreateRoundDataEncoder(), getCreateRoundDataDecoder());
 }

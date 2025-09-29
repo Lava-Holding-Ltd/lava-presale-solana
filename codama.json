@@ -1,5 +1,5 @@
 {
-  "idl": "target/idl/lava_programs.json",
+  "idl": "target/idl/lava_presale.json",
   "before": [],
   "scripts": {
     "js": {

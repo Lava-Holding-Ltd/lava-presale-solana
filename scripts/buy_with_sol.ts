@@ -17,14 +17,14 @@ const { rpc, sendAndConfirmTransaction, simulateTransaction } =
   createSolanaClient({ urlOrMoniker: "localnet" });
 
 const [configAddress] = await getProgramDerivedAddress({
-  programAddress: programClient.LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  programAddress: programClient.LAVA_PRESALE_PROGRAM_ADDRESS,
   seeds: ["presale"],
 });
 
 const config = await programClient.fetchPresaleConfig(rpc, configAddress);
 const [activeStageAddress] = await getProgramDerivedAddress({
-  seeds: ["stage", getU8Encoder().encode(config.data.currentStage)],
-  programAddress: programClient.LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  seeds: ["stage", getU8Encoder().encode(config.data.currentRound)],
+  programAddress: programClient.LAVA_PRESALE_PROGRAM_ADDRESS,
 });
 console.log(activeStageAddress);
 
@@ -35,7 +35,7 @@ const buy_with_sol_ix = await programClient.getBuyWithSolInstructionAsync({
   authority: signer,
   user,
   treasury: TREASURY,
-  activeStage: activeStageAddress,
+  activeRound: activeStageAddress,
   refferal: null,
   tokenAmount: 20_153_000_000,
 });

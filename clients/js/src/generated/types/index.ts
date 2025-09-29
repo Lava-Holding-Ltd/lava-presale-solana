@@ -6,8 +6,9 @@
  * @see https://github.com/codama-idl/codama
  */
 
+export * from './asset';
 export * from './contributed';
-export * from './createStageData';
+export * from './createRoundData';
 export * from './priceFeedMessage';
 export * from './referralData';
 export * from './verificationLevel';

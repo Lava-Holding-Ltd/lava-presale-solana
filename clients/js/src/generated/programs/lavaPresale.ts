@@ -18,22 +18,22 @@ import {
   type ParsedBuyWithUsdInstruction,
   type ParsedFinalizePresaleInstruction,
   type ParsedInitializePresaleInstruction,
-  type ParsedSetStageInstruction,
+  type ParsedSetNewRoundInstruction,
 } from '../instructions';
 
-export const LAVA_PROGRAMS_PROGRAM_ADDRESS =
+export const LAVA_PRESALE_PROGRAM_ADDRESS =
   'FyB2J5z75o5bE9Ts9McZR6inuWyzpNGCKjFgBFtWAkLm' as Address<'FyB2J5z75o5bE9Ts9McZR6inuWyzpNGCKjFgBFtWAkLm'>;
 
-export enum LavaProgramsAccount {
+export enum LavaPresaleAccount {
   PresaleConfig,
   PriceUpdateV2,
-  Stage,
+  Round,
   UserContribution,
 }
 
-export function identifyLavaProgramsAccount(
+export function identifyLavaPresaleAccount(
   account: { data: ReadonlyUint8Array } | ReadonlyUint8Array
-): LavaProgramsAccount {
+): LavaPresaleAccount {
   const data = 'data' in account ? account.data : account;
   if (
     containsBytes(
@@ -44,7 +44,7 @@ export function identifyLavaProgramsAccount(
       0
     )
   ) {
-    return LavaProgramsAccount.PresaleConfig;
+    return LavaPresaleAccount.PresaleConfig;
   }
   if (
     containsBytes(
@@ -55,18 +55,18 @@ export function identifyLavaProgramsAccount(
       0
     )
   ) {
-    return LavaProgramsAccount.PriceUpdateV2;
+    return LavaPresaleAccount.PriceUpdateV2;
   }
   if (
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([128, 95, 240, 157, 209, 159, 69, 179])
+        new Uint8Array([87, 127, 165, 51, 73, 78, 116, 174])
       ),
       0
     )
   ) {
-    return LavaProgramsAccount.Stage;
+    return LavaPresaleAccount.Round;
   }
   if (
     containsBytes(
@@ -77,24 +77,24 @@ export function identifyLavaProgramsAccount(
       0
     )
   ) {
-    return LavaProgramsAccount.UserContribution;
+    return LavaPresaleAccount.UserContribution;
   }
   throw new Error(
-    'The provided account could not be identified as a lavaPrograms account.'
+    'The provided account could not be identified as a lavaPresale account.'
   );
 }
 
-export enum LavaProgramsInstruction {
+export enum LavaPresaleInstruction {
   BuyWithSol,
   BuyWithUsd,
   FinalizePresale,
   InitializePresale,
-  SetStage,
+  SetNewRound,
 }
 
-export function identifyLavaProgramsInstruction(
+export function identifyLavaPresaleInstruction(
   instruction: { data: ReadonlyUint8Array } | ReadonlyUint8Array
-): LavaProgramsInstruction {
+): LavaPresaleInstruction {
   const data = 'data' in instruction ? instruction.data : instruction;
   if (
     containsBytes(
@@ -105,7 +105,7 @@ export function identifyLavaProgramsInstruction(
       0
     )
   ) {
-    return LavaProgramsInstruction.BuyWithSol;
+    return LavaPresaleInstruction.BuyWithSol;
   }
   if (
     containsBytes(
@@ -116,7 +116,7 @@ export function identifyLavaProgramsInstruction(
       0
     )
   ) {
-    return LavaProgramsInstruction.BuyWithUsd;
+    return LavaPresaleInstruction.BuyWithUsd;
   }
   if (
     containsBytes(
@@ -127,7 +127,7 @@ export function identifyLavaProgramsInstruction(
       0
     )
   ) {
-    return LavaProgramsInstruction.FinalizePresale;
+    return LavaPresaleInstruction.FinalizePresale;
   }
   if (
     containsBytes(
@@ -138,39 +138,39 @@ export function identifyLavaProgramsInstruction(
       0
     )
   ) {
-    return LavaProgramsInstruction.InitializePresale;
+    return LavaPresaleInstruction.InitializePresale;
   }
   if (
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([139, 146, 4, 101, 177, 94, 37, 233])
+        new Uint8Array([83, 130, 38, 185, 248, 83, 180, 192])
       ),
       0
     )
   ) {
-    return LavaProgramsInstruction.SetStage;
+    return LavaPresaleInstruction.SetNewRound;
   }
   throw new Error(
-    'The provided instruction could not be identified as a lavaPrograms instruction.'
+    'The provided instruction could not be identified as a lavaPresale instruction.'
   );
 }
 
-export type ParsedLavaProgramsInstruction<
+export type ParsedLavaPresaleInstruction<
   TProgram extends string = 'FyB2J5z75o5bE9Ts9McZR6inuWyzpNGCKjFgBFtWAkLm',
 > =
   | ({
-      instructionType: LavaProgramsInstruction.BuyWithSol;
+      instructionType: LavaPresaleInstruction.BuyWithSol;
     } & ParsedBuyWithSolInstruction<TProgram>)
   | ({
-      instructionType: LavaProgramsInstruction.BuyWithUsd;
+      instructionType: LavaPresaleInstruction.BuyWithUsd;
     } & ParsedBuyWithUsdInstruction<TProgram>)
   | ({
-      instructionType: LavaProgramsInstruction.FinalizePresale;
+      instructionType: LavaPresaleInstruction.FinalizePresale;
     } & ParsedFinalizePresaleInstruction<TProgram>)
   | ({
-      instructionType: LavaProgramsInstruction.InitializePresale;
+      instructionType: LavaPresaleInstruction.InitializePresale;
     } & ParsedInitializePresaleInstruction<TProgram>)
   | ({
-      instructionType: LavaProgramsInstruction.SetStage;
-    } & ParsedSetStageInstruction<TProgram>);
+      instructionType: LavaPresaleInstruction.SetNewRound;
+    } & ParsedSetNewRoundInstruction<TProgram>);

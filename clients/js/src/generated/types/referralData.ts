@@ -12,10 +12,12 @@ import {
   combineCodec,
   getStructDecoder,
   getStructEncoder,
+  getU16Decoder,
+  getU16Encoder,
   getU32Decoder,
   getU32Encoder,
-  getU64Decoder,
-  getU64Encoder,
+  getU8Decoder,
+  getU8Encoder,
   getUtf8Decoder,
   getUtf8Encoder,
   type Codec,
@@ -23,21 +25,27 @@ import {
   type Encoder,
 } from 'gill';
 
-export type ReferralData = { code: string; bonusPercent: bigint };
+export type ReferralData = {
+  code: string;
+  bonusPercent: number;
+  refType: number;
+};
 
-export type ReferralDataArgs = { code: string; bonusPercent: number | bigint };
+export type ReferralDataArgs = ReferralData;
 
 export function getReferralDataEncoder(): Encoder<ReferralDataArgs> {
   return getStructEncoder([
     ['code', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
-    ['bonusPercent', getU64Encoder()],
+    ['bonusPercent', getU16Encoder()],
+    ['refType', getU8Encoder()],
   ]);
 }
 
 export function getReferralDataDecoder(): Decoder<ReferralData> {
   return getStructDecoder([
     ['code', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
-    ['bonusPercent', getU64Decoder()],
+    ['bonusPercent', getU16Decoder()],
+    ['refType', getU8Decoder()],
   ]);
 }
 

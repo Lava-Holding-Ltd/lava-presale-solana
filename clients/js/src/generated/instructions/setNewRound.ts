@@ -31,28 +31,30 @@ import {
   type WritableAccount,
   type WritableSignerAccount,
 } from 'gill';
-import { LAVA_PROGRAMS_PROGRAM_ADDRESS } from '../programs';
+import { LAVA_PRESALE_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 import {
-  getCreateStageDataDecoder,
-  getCreateStageDataEncoder,
-  type CreateStageData,
-  type CreateStageDataArgs,
+  getCreateRoundDataDecoder,
+  getCreateRoundDataEncoder,
+  type CreateRoundData,
+  type CreateRoundDataArgs,
 } from '../types';
 
-export const SET_STAGE_DISCRIMINATOR = new Uint8Array([
-  139, 146, 4, 101, 177, 94, 37, 233,
+export const SET_NEW_ROUND_DISCRIMINATOR = new Uint8Array([
+  83, 130, 38, 185, 248, 83, 180, 192,
 ]);
 
-export function getSetStageDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(SET_STAGE_DISCRIMINATOR);
+export function getSetNewRoundDiscriminatorBytes() {
+  return fixEncoderSize(getBytesEncoder(), 8).encode(
+    SET_NEW_ROUND_DISCRIMINATOR
+  );
 }
 
-export type SetStageInstruction<
-  TProgram extends string = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
+export type SetNewRoundInstruction<
+  TProgram extends string = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
   TAccountAuthority extends string | AccountMeta<string> = string,
   TAccountPresaleConfig extends string | AccountMeta<string> = string,
-  TAccountStage extends string | AccountMeta<string> = string,
+  TAccountRound extends string | AccountMeta<string> = string,
   TAccountSystemProgram extends
     | string
     | AccountMeta<string> = '11111111111111111111111111111111',
@@ -68,9 +70,9 @@ export type SetStageInstruction<
       TAccountPresaleConfig extends string
         ? WritableAccount<TAccountPresaleConfig>
         : TAccountPresaleConfig,
-      TAccountStage extends string
-        ? WritableAccount<TAccountStage>
-        : TAccountStage,
+      TAccountRound extends string
+        ? WritableAccount<TAccountRound>
+        : TAccountRound,
       TAccountSystemProgram extends string
         ? ReadonlyAccount<TAccountSystemProgram>
         : TAccountSystemProgram,
@@ -78,85 +80,84 @@ export type SetStageInstruction<
     ]
   >;
 
-export type SetStageInstructionData = {
+export type SetNewRoundInstructionData = {
   discriminator: ReadonlyUint8Array;
-  newStage: CreateStageData;
+  newRound: CreateRoundData;
 };
 
-export type SetStageInstructionDataArgs = { newStage: CreateStageDataArgs };
+export type SetNewRoundInstructionDataArgs = { newRound: CreateRoundDataArgs };
 
-export function getSetStageInstructionDataEncoder(): FixedSizeEncoder<SetStageInstructionDataArgs> {
+export function getSetNewRoundInstructionDataEncoder(): FixedSizeEncoder<SetNewRoundInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([
       ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
-      ['newStage', getCreateStageDataEncoder()],
+      ['newRound', getCreateRoundDataEncoder()],
     ]),
-    (value) => ({ ...value, discriminator: SET_STAGE_DISCRIMINATOR })
+    (value) => ({ ...value, discriminator: SET_NEW_ROUND_DISCRIMINATOR })
   );
 }
 
-export function getSetStageInstructionDataDecoder(): FixedSizeDecoder<SetStageInstructionData> {
+export function getSetNewRoundInstructionDataDecoder(): FixedSizeDecoder<SetNewRoundInstructionData> {
   return getStructDecoder([
     ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
-    ['newStage', getCreateStageDataDecoder()],
+    ['newRound', getCreateRoundDataDecoder()],
   ]);
 }
 
-export function getSetStageInstructionDataCodec(): FixedSizeCodec<
-  SetStageInstructionDataArgs,
-  SetStageInstructionData
+export function getSetNewRoundInstructionDataCodec(): FixedSizeCodec<
+  SetNewRoundInstructionDataArgs,
+  SetNewRoundInstructionData
 > {
   return combineCodec(
-    getSetStageInstructionDataEncoder(),
-    getSetStageInstructionDataDecoder()
+    getSetNewRoundInstructionDataEncoder(),
+    getSetNewRoundInstructionDataDecoder()
   );
 }
 
-export type SetStageAsyncInput<
+export type SetNewRoundAsyncInput<
   TAccountAuthority extends string = string,
   TAccountPresaleConfig extends string = string,
-  TAccountStage extends string = string,
+  TAccountRound extends string = string,
   TAccountSystemProgram extends string = string,
 > = {
   authority: TransactionSigner<TAccountAuthority>;
   presaleConfig?: Address<TAccountPresaleConfig>;
-  stage: Address<TAccountStage>;
+  round: Address<TAccountRound>;
   systemProgram?: Address<TAccountSystemProgram>;
-  newStage: SetStageInstructionDataArgs['newStage'];
+  newRound: SetNewRoundInstructionDataArgs['newRound'];
 };
 
-export async function getSetStageInstructionAsync<
+export async function getSetNewRoundInstructionAsync<
   TAccountAuthority extends string,
   TAccountPresaleConfig extends string,
-  TAccountStage extends string,
+  TAccountRound extends string,
   TAccountSystemProgram extends string,
-  TProgramAddress extends Address = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  TProgramAddress extends Address = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
 >(
-  input: SetStageAsyncInput<
+  input: SetNewRoundAsyncInput<
     TAccountAuthority,
     TAccountPresaleConfig,
-    TAccountStage,
+    TAccountRound,
     TAccountSystemProgram
   >,
   config?: { programAddress?: TProgramAddress }
 ): Promise<
-  SetStageInstruction<
+  SetNewRoundInstruction<
     TProgramAddress,
     TAccountAuthority,
     TAccountPresaleConfig,
-    TAccountStage,
+    TAccountRound,
     TAccountSystemProgram
   >
 > {
   // Program address.
-  const programAddress =
-    config?.programAddress ?? LAVA_PROGRAMS_PROGRAM_ADDRESS;
+  const programAddress = config?.programAddress ?? LAVA_PRESALE_PROGRAM_ADDRESS;
 
   // Original accounts.
   const originalAccounts = {
     authority: { value: input.authority ?? null, isWritable: true },
     presaleConfig: { value: input.presaleConfig ?? null, isWritable: true },
-    stage: { value: input.stage ?? null, isWritable: true },
+    round: { value: input.round ?? null, isWritable: true },
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
   };
   const accounts = originalAccounts as Record<
@@ -188,65 +189,64 @@ export async function getSetStageInstructionAsync<
     accounts: [
       getAccountMeta(accounts.authority),
       getAccountMeta(accounts.presaleConfig),
-      getAccountMeta(accounts.stage),
+      getAccountMeta(accounts.round),
       getAccountMeta(accounts.systemProgram),
     ],
-    data: getSetStageInstructionDataEncoder().encode(
-      args as SetStageInstructionDataArgs
+    data: getSetNewRoundInstructionDataEncoder().encode(
+      args as SetNewRoundInstructionDataArgs
     ),
     programAddress,
-  } as SetStageInstruction<
+  } as SetNewRoundInstruction<
     TProgramAddress,
     TAccountAuthority,
     TAccountPresaleConfig,
-    TAccountStage,
+    TAccountRound,
     TAccountSystemProgram
   >);
 }
 
-export type SetStageInput<
+export type SetNewRoundInput<
   TAccountAuthority extends string = string,
   TAccountPresaleConfig extends string = string,
-  TAccountStage extends string = string,
+  TAccountRound extends string = string,
   TAccountSystemProgram extends string = string,
 > = {
   authority: TransactionSigner<TAccountAuthority>;
   presaleConfig: Address<TAccountPresaleConfig>;
-  stage: Address<TAccountStage>;
+  round: Address<TAccountRound>;
   systemProgram?: Address<TAccountSystemProgram>;
-  newStage: SetStageInstructionDataArgs['newStage'];
+  newRound: SetNewRoundInstructionDataArgs['newRound'];
 };
 
-export function getSetStageInstruction<
+export function getSetNewRoundInstruction<
   TAccountAuthority extends string,
   TAccountPresaleConfig extends string,
-  TAccountStage extends string,
+  TAccountRound extends string,
   TAccountSystemProgram extends string,
-  TProgramAddress extends Address = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
+  TProgramAddress extends Address = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
 >(
-  input: SetStageInput<
+  input: SetNewRoundInput<
     TAccountAuthority,
     TAccountPresaleConfig,
-    TAccountStage,
+    TAccountRound,
     TAccountSystemProgram
   >,
   config?: { programAddress?: TProgramAddress }
-): SetStageInstruction<
+): SetNewRoundInstruction<
   TProgramAddress,
   TAccountAuthority,
   TAccountPresaleConfig,
-  TAccountStage,
+  TAccountRound,
   TAccountSystemProgram
 > {
   // Program address.
-  const programAddress =
-    config?.programAddress ?? LAVA_PROGRAMS_PROGRAM_ADDRESS;
+  const programAddress = config?.programAddress ?? LAVA_PRESALE_PROGRAM_ADDRESS;
 
   // Original accounts.
   const originalAccounts = {
     authority: { value: input.authority ?? null, isWritable: true },
     presaleConfig: { value: input.presaleConfig ?? null, isWritable: true },
-    stage: { value: input.stage ?? null, isWritable: true },
+    round: { value: input.round ?? null, isWritable: true },
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
   };
   const accounts = originalAccounts as Record<
@@ -268,44 +268,44 @@ export function getSetStageInstruction<
     accounts: [
       getAccountMeta(accounts.authority),
       getAccountMeta(accounts.presaleConfig),
-      getAccountMeta(accounts.stage),
+      getAccountMeta(accounts.round),
       getAccountMeta(accounts.systemProgram),
     ],
-    data: getSetStageInstructionDataEncoder().encode(
-      args as SetStageInstructionDataArgs
+    data: getSetNewRoundInstructionDataEncoder().encode(
+      args as SetNewRoundInstructionDataArgs
     ),
     programAddress,
-  } as SetStageInstruction<
+  } as SetNewRoundInstruction<
     TProgramAddress,
     TAccountAuthority,
     TAccountPresaleConfig,
-    TAccountStage,
+    TAccountRound,
     TAccountSystemProgram
   >);
 }
 
-export type ParsedSetStageInstruction<
-  TProgram extends string = typeof LAVA_PROGRAMS_PROGRAM_ADDRESS,
+export type ParsedSetNewRoundInstruction<
+  TProgram extends string = typeof LAVA_PRESALE_PROGRAM_ADDRESS,
   TAccountMetas extends readonly AccountMeta[] = readonly AccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
     authority: TAccountMetas[0];
     presaleConfig: TAccountMetas[1];
-    stage: TAccountMetas[2];
+    round: TAccountMetas[2];
     systemProgram: TAccountMetas[3];
   };
-  data: SetStageInstructionData;
+  data: SetNewRoundInstructionData;
 };
 
-export function parseSetStageInstruction<
+export function parseSetNewRoundInstruction<
   TProgram extends string,
   TAccountMetas extends readonly AccountMeta[],
 >(
   instruction: Instruction<TProgram> &
     InstructionWithAccounts<TAccountMetas> &
     InstructionWithData<ReadonlyUint8Array>
-): ParsedSetStageInstruction<TProgram, TAccountMetas> {
+): ParsedSetNewRoundInstruction<TProgram, TAccountMetas> {
   if (instruction.accounts.length < 4) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
@@ -321,9 +321,9 @@ export function parseSetStageInstruction<
     accounts: {
       authority: getNextAccount(),
       presaleConfig: getNextAccount(),
-      stage: getNextAccount(),
+      round: getNextAccount(),
       systemProgram: getNextAccount(),
     },
-    data: getSetStageInstructionDataDecoder().decode(instruction.data),
+    data: getSetNewRoundInstructionDataDecoder().decode(instruction.data),
   };
 }

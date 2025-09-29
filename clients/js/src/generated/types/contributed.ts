@@ -7,8 +7,6 @@
  */
 
 import {
-  addDecoderSizePrefix,
-  addEncoderSizePrefix,
   combineCodec,
   getAddressDecoder,
   getAddressEncoder,
@@ -16,14 +14,10 @@ import {
   getOptionEncoder,
   getStructDecoder,
   getStructEncoder,
-  getU32Decoder,
-  getU32Encoder,
   getU64Decoder,
   getU64Encoder,
   getU8Decoder,
   getU8Encoder,
-  getUtf8Decoder,
-  getUtf8Encoder,
   type Address,
   type Codec,
   type Decoder,
@@ -31,6 +25,16 @@ import {
   type Option,
   type OptionOrNullable,
 } from 'gill';
+import {
+  getAssetDecoder,
+  getAssetEncoder,
+  getReferralDataDecoder,
+  getReferralDataEncoder,
+  type Asset,
+  type AssetArgs,
+  type ReferralData,
+  type ReferralDataArgs,
+} from '.';
 
 export type Contributed = {
   contributor: Address;
@@ -38,7 +42,8 @@ export type Contributed = {
   amountReferralBonusTokens: bigint;
   contributedAmountUsd: bigint;
   stageId: number;
-  referralCode: Option<string>;
+  referral: Option<ReferralData>;
+  asset: Asset;
 };
 
 export type ContributedArgs = {
@@ -47,7 +52,8 @@ export type ContributedArgs = {
   amountReferralBonusTokens: number | bigint;
   contributedAmountUsd: number | bigint;
   stageId: number;
-  referralCode: OptionOrNullable<string>;
+  referral: OptionOrNullable<ReferralDataArgs>;
+  asset: AssetArgs;
 };
 
 export function getContributedEncoder(): Encoder<ContributedArgs> {
@@ -57,10 +63,8 @@ export function getContributedEncoder(): Encoder<ContributedArgs> {
     ['amountReferralBonusTokens', getU64Encoder()],
     ['contributedAmountUsd', getU64Encoder()],
     ['stageId', getU8Encoder()],
-    [
-      'referralCode',
-      getOptionEncoder(addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())),
-    ],
+    ['referral', getOptionEncoder(getReferralDataEncoder())],
+    ['asset', getAssetEncoder()],
   ]);
 }
 
@@ -71,10 +75,8 @@ export function getContributedDecoder(): Decoder<Contributed> {
     ['amountReferralBonusTokens', getU64Decoder()],
     ['contributedAmountUsd', getU64Decoder()],
     ['stageId', getU8Decoder()],
-    [
-      'referralCode',
-      getOptionDecoder(addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())),
-    ],
+    ['referral', getOptionDecoder(getReferralDataDecoder())],
+    ['asset', getAssetDecoder()],
   ]);
 }
 

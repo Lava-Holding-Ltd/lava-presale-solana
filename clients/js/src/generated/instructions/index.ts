@@ -10,4 +10,4 @@ export * from './buyWithSol';
 export * from './buyWithUsd';
 export * from './finalizePresale';
 export * from './initializePresale';
-export * from './setStage';
+export * from './setNewRound';
