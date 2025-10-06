@@ -38,7 +38,7 @@ pub fn handler(ctx: Context<SetNewRound>, new_round: CreateRoundData) -> Result<
         ErrorCode::PresaleAlreadyFinalized
     );
     require!(
-        presale_config.current_round < (crate::constants::MAX_STAGES - 1) as u8,
+        presale_config.current_round < (crate::constants::MAX_STAGES) as u8,
         ErrorCode::InvalidRoundConfig
     );
     require!(new_round.token_price_usd > 0, ErrorCode::InvalidRoundConfig);
