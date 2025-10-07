@@ -36,7 +36,9 @@ pub const MAX_STAGES: usize = 10;
 
 pub const MAX_CONTRIBUTION_USD_PER_USER: u64 = 50_000 * (10_u64.pow(USDC_DECIMALS as u32));
 
-pub const BASIS_POINTS: usize = 10_000;
+pub const BASIS_POINTS: usize = 10_000; // 100 %
+
+pub const MAX_BASIS_POINTS: usize = 1_000; // 10 %
 
 pub const START_ROUND_ID: u8 = 1;
 

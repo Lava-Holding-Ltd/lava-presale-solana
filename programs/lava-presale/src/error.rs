@@ -36,4 +36,6 @@ pub enum ErrorCode {
     PresalePaused,
     #[msg("Presale is not paused")]
     PresaleNotPaused,
+    #[msg("Round is not active")]
+    RoundNotActive,
 }

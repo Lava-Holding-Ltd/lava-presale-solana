@@ -1,7 +1,7 @@
 use crate::error::ErrorCode;
 use crate::events::{Asset, Contributed};
 use crate::{
-    PresaleConfig, ReferralData, Round, UserContribution, BASIS_POINTS,
+    PresaleConfig, ReferralData, Round, UserContribution, BASIS_POINTS, MAX_BASIS_POINTS,
     MAX_CONTRIBUTION_USD_PER_USER, PRESALE_SEED, ROUND_SEED, USDC_DECIMALS, USDC_MINT, USDT_MINT,
     USER_CONTRIBUTION_SEED,
 };
@@ -85,10 +85,10 @@ pub fn handler(
         ErrorCode::InvalidRoundConfig
     );
 
-    let now = Clock::get()?.unix_timestamp;
-
-    require_gte!(now, ctx.accounts.active_round.start_time);
-    require_gte!(ctx.accounts.active_round.end_time, now);
+    require!(
+        ctx.accounts.active_round.is_active(),
+        ErrorCode::RoundNotActive
+    );
 
     let mint = &ctx.accounts.mint;
 
@@ -109,11 +109,15 @@ pub fn handler(
     let round = &ctx.accounts.active_round;
 
     let bonus_tokens = match &referral {
-        Some(ref referral_data) => token_amount
-            .checked_mul(referral_data.bonus_percent as u64)
-            .ok_or(ErrorCode::ArithmeticOverflow)?
-            .checked_div(BASIS_POINTS as u64)
-            .ok_or(ErrorCode::ArithmeticOverflow)?,
+        Some(ref referral_data) => {
+            require_gte!(MAX_BASIS_POINTS as u16, referral_data.bonus_percent);
+            token_amount
+                .checked_mul(referral_data.bonus_percent as u64)
+                .ok_or(ErrorCode::ArithmeticOverflow)?
+                .checked_div(BASIS_POINTS as u64)
+                .ok_or(ErrorCode::ArithmeticOverflow)?
+        }
+
         None => 0,
     };
 
