@@ -112,7 +112,15 @@ pub fn handler(
     let convert_exponent: i32 = USDC_DECIMALS as i32 * 2 + price_data.exponent;
     let convert_n = 10u128.pow(convert_exponent as u32);
 
-    let total_sol_lamports = total_cost_usd
+    msg!(
+        "total_cost_usd: {}, sol_price_usd: {}, convert_n: {}",
+        total_cost_usd,
+        sol_price_usd,
+        convert_n
+    );
+    let total_sol_lamports = (total_cost_usd as u128)
+        .checked_mul(u64::MAX as u128)
+        .ok_or(ErrorCode::ArithmeticOverflow)?
         .checked_div(
             sol_price_usd
                 .checked_mul(convert_n) // 10^4
@@ -120,6 +128,8 @@ pub fn handler(
         )
         .ok_or(ErrorCode::ArithmeticOverflow)?
         .checked_mul(10u128.pow(SOL_DECIMALS as u32))
+        .ok_or(ErrorCode::ArithmeticOverflow)?
+        .checked_div(u64::MAX as u128)
         .ok_or(ErrorCode::ArithmeticOverflow)? as u64;
 
     require_gt!(total_sol_lamports, 0);
