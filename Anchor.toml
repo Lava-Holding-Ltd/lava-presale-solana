@@ -5,6 +5,9 @@ package_manager = "pnpm"
 resolution = true
 skip-lint = false
 
+[programs.devnet]
+lava_presale = "5fYyn9ZN1bFEbqjZvLMMqibSBKZTdvWTWrtKLnWqALbj"
+
 [programs.localnet]
 lava_programs = "FyB2J5z75o5bE9Ts9McZR6inuWyzpNGCKjFgBFtWAkLm"
 
@@ -12,7 +15,7 @@ lava_programs = "FyB2J5z75o5bE9Ts9McZR6inuWyzpNGCKjFgBFtWAkLm"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/matt5XJ1oeuMSJeLM5aXi2kJUkGqfzFPWDBjCwTcvoN.json"
 
 [scripts]

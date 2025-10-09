@@ -7,6 +7,7 @@ pub struct PresaleConfig {
     pub treasury: Pubkey,
     pub current_round: u8,
     pub finalized: bool,
+    pub total_allocated_tokens: u64,
     pub bump: u8,
 }
 

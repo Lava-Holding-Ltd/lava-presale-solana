@@ -72,6 +72,7 @@ pub fn handler(ctx: Context<InitializePresale>, first_stage: CreateRoundData) ->
         treasury: ctx.accounts.treasury.key(),
         current_round: START_ROUND_ID,
         finalized: false,
+        total_allocated_tokens: 0,
         bump: ctx.bumps.presale_config,
     });
 

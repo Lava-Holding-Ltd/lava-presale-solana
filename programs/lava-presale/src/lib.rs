@@ -12,7 +12,7 @@ pub use constants::*;
 pub use instructions::*;
 pub use state::*;
 
-declare_id!("FyB2J5z75o5bE9Ts9McZR6inuWyzpNGCKjFgBFtWAkLm");
+declare_id!("5fYyn9ZN1bFEbqjZvLMMqibSBKZTdvWTWrtKLnWqALbj");
 
 #[program]
 pub mod lava_presale {

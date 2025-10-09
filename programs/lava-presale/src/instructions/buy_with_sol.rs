@@ -2,7 +2,7 @@ use crate::error::ErrorCode;
 use crate::events::{Asset, Contributed};
 use crate::{
     PresaleConfig, ReferralData, Round, UserContribution, BASIS_POINTS, MAX_BASIS_POINTS,
-    MAX_CONTRIBUTION_USD_PER_USER, PRESALE_SEED, ROUND_SEED, SOL_DECIMALS,
+    MAX_CONTRIBUTION_USD_PER_USER, MAX_TOKEN_CAP, PRESALE_SEED, ROUND_SEED, SOL_DECIMALS,
     SOL_USD_PRICE_FEED_ACCOUNT, USDC_DECIMALS, USER_CONTRIBUTION_SEED,
 };
 use anchor_lang::prelude::*;
@@ -21,6 +21,7 @@ pub struct BuyWithSol<'info> {
     pub user: Signer<'info>,
 
     #[account(
+        mut,
         has_one = treasury @ ErrorCode::Unauthorized,
         has_one = authority @ ErrorCode::Unauthorized,
         seeds = [PRESALE_SEED.as_bytes()],
@@ -172,13 +173,21 @@ pub fn handler(
         .checked_div(10u128.pow(6 as u32))
         .ok_or(ErrorCode::ArithmeticOverflow)? as u64;
 
+    let token_amount_total = token_amount + bonus_tokens;
     ctx.accounts.user_contribution.total_contributed_usd += contributed_amount_usd;
     ctx.accounts.user_contribution.total_tokens_purchased += token_amount + bonus_tokens;
+    ctx.accounts.presale_config.total_allocated_tokens += token_amount_total;
 
     require_gte!(
         MAX_CONTRIBUTION_USD_PER_USER,
         ctx.accounts.user_contribution.total_contributed_usd,
         ErrorCode::ExceedsMaxContribution
+    );
+
+    require_gte!(
+        MAX_TOKEN_CAP,
+        ctx.accounts.presale_config.total_allocated_tokens,
+        ErrorCode::HardCapReached
     );
 
     emit!(Contributed {

@@ -42,6 +42,8 @@ pub const MAX_BASIS_POINTS: usize = 1_000; // 10 %
 
 pub const START_ROUND_ID: u8 = 1;
 
+pub const MAX_TOKEN_CAP: u64 = 330_000_000 * (10_u64.pow(LAVA_DECIMALS as u32));
+
 pub const USDC_DECIMALS: u8 = 6;
 pub const USDT_DECIMALS: u8 = 6;
 pub const LAVA_DECIMALS: u8 = 6;

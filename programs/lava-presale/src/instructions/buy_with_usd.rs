@@ -2,8 +2,8 @@ use crate::error::ErrorCode;
 use crate::events::{Asset, Contributed};
 use crate::{
     PresaleConfig, ReferralData, Round, UserContribution, BASIS_POINTS, MAX_BASIS_POINTS,
-    MAX_CONTRIBUTION_USD_PER_USER, PRESALE_SEED, ROUND_SEED, USDC_DECIMALS, USDC_MINT, USDT_MINT,
-    USER_CONTRIBUTION_SEED,
+    MAX_CONTRIBUTION_USD_PER_USER, MAX_TOKEN_CAP, PRESALE_SEED, ROUND_SEED, USDC_DECIMALS,
+    USDC_MINT, USDT_MINT, USER_CONTRIBUTION_SEED,
 };
 use anchor_lang::prelude::*;
 use anchor_spl::associated_token::AssociatedToken;
@@ -21,6 +21,7 @@ pub struct BuyWithUsd<'info> {
     pub user: Signer<'info>,
 
     #[account(
+        mut,
         has_one = authority @ ErrorCode::Unauthorized,
         has_one = treasury @ ErrorCode::Unauthorized,
         seeds = [PRESALE_SEED.as_bytes()],
@@ -128,13 +129,21 @@ pub fn handler(
         .checked_div(10_u128.pow(USDC_DECIMALS as u32))
         .ok_or(ErrorCode::ArithmeticOverflow)? as u64;
 
+    let token_amount_total = token_amount + bonus_tokens;
     user_contribution.total_contributed_usd += total_cost_usd;
-    user_contribution.total_tokens_purchased += token_amount + bonus_tokens;
+    user_contribution.total_tokens_purchased += token_amount_total;
+    ctx.accounts.presale_config.total_allocated_tokens += token_amount_total;
 
     require_gte!(
         MAX_CONTRIBUTION_USD_PER_USER,
         user_contribution.total_contributed_usd,
         ErrorCode::ExceedsMaxContribution
+    );
+
+    require_gte!(
+        MAX_TOKEN_CAP,
+        ctx.accounts.presale_config.total_allocated_tokens,
+        ErrorCode::HardCapReached
     );
 
     let transfer_accounts = TransferChecked {
