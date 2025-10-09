@@ -22,7 +22,7 @@ import {
 } from '../instructions';
 
 export const LAVA_PRESALE_PROGRAM_ADDRESS =
-  'FyB2J5z75o5bE9Ts9McZR6inuWyzpNGCKjFgBFtWAkLm' as Address<'FyB2J5z75o5bE9Ts9McZR6inuWyzpNGCKjFgBFtWAkLm'>;
+  '5fYyn9ZN1bFEbqjZvLMMqibSBKZTdvWTWrtKLnWqALbj' as Address<'5fYyn9ZN1bFEbqjZvLMMqibSBKZTdvWTWrtKLnWqALbj'>;
 
 export enum LavaPresaleAccount {
   PresaleConfig,
@@ -157,7 +157,7 @@ export function identifyLavaPresaleInstruction(
 }
 
 export type ParsedLavaPresaleInstruction<
-  TProgram extends string = 'FyB2J5z75o5bE9Ts9McZR6inuWyzpNGCKjFgBFtWAkLm',
+  TProgram extends string = '5fYyn9ZN1bFEbqjZvLMMqibSBKZTdvWTWrtKLnWqALbj',
 > =
   | ({
       instructionType: LavaPresaleInstruction.BuyWithSol;

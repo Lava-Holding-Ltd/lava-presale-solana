@@ -48,6 +48,8 @@ export const LAVA_PRESALE_ERROR__PRESALE_ALREADY_FINALIZED = 0x177e; // 6014
 export const LAVA_PRESALE_ERROR__PRESALE_PAUSED = 0x177f; // 6015
 /** PresaleNotPaused: Presale is not paused */
 export const LAVA_PRESALE_ERROR__PRESALE_NOT_PAUSED = 0x1780; // 6016
+/** RoundNotActive: Round is not active */
+export const LAVA_PRESALE_ERROR__ROUND_NOT_ACTIVE = 0x1781; // 6017
 
 export type LavaPresaleError =
   | typeof LAVA_PRESALE_ERROR__ARITHMETIC_OVERFLOW
@@ -64,6 +66,7 @@ export type LavaPresaleError =
   | typeof LAVA_PRESALE_ERROR__PRESALE_NOT_STARTED
   | typeof LAVA_PRESALE_ERROR__PRESALE_PAUSED
   | typeof LAVA_PRESALE_ERROR__REFUNDS_NOT_AVAILABLE
+  | typeof LAVA_PRESALE_ERROR__ROUND_NOT_ACTIVE
   | typeof LAVA_PRESALE_ERROR__SOFT_CAP_NOT_REACHED
   | typeof LAVA_PRESALE_ERROR__STAGE_SUPPLY_EXHAUSTED
   | typeof LAVA_PRESALE_ERROR__UNAUTHORIZED;
@@ -85,6 +88,7 @@ if (process.env.NODE_ENV !== 'production') {
     [LAVA_PRESALE_ERROR__PRESALE_NOT_STARTED]: `Presale has not started yet`,
     [LAVA_PRESALE_ERROR__PRESALE_PAUSED]: `Presale is currently paused`,
     [LAVA_PRESALE_ERROR__REFUNDS_NOT_AVAILABLE]: `Refunds not available yet`,
+    [LAVA_PRESALE_ERROR__ROUND_NOT_ACTIVE]: `Round is not active`,
     [LAVA_PRESALE_ERROR__SOFT_CAP_NOT_REACHED]: `Soft cap not reached, refunds available`,
     [LAVA_PRESALE_ERROR__STAGE_SUPPLY_EXHAUSTED]: `Stage token supply exhausted`,
     [LAVA_PRESALE_ERROR__UNAUTHORIZED]: `Unauthorized access`,

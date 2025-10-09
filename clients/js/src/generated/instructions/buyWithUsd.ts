@@ -98,7 +98,7 @@ export type BuyWithUsdInstruction<
         ? WritableSignerAccount<TAccountUser> & AccountSignerMeta<TAccountUser>
         : TAccountUser,
       TAccountPresaleConfig extends string
-        ? ReadonlyAccount<TAccountPresaleConfig>
+        ? WritableAccount<TAccountPresaleConfig>
         : TAccountPresaleConfig,
       TAccountActiveRound extends string
         ? ReadonlyAccount<TAccountActiveRound>
@@ -253,7 +253,7 @@ export async function getBuyWithUsdInstructionAsync<
     authority: { value: input.authority ?? null, isWritable: false },
     treasury: { value: input.treasury ?? null, isWritable: false },
     user: { value: input.user ?? null, isWritable: true },
-    presaleConfig: { value: input.presaleConfig ?? null, isWritable: false },
+    presaleConfig: { value: input.presaleConfig ?? null, isWritable: true },
     activeRound: { value: input.activeRound ?? null, isWritable: false },
     userContribution: {
       value: input.userContribution ?? null,
@@ -457,7 +457,7 @@ export function getBuyWithUsdInstruction<
     authority: { value: input.authority ?? null, isWritable: false },
     treasury: { value: input.treasury ?? null, isWritable: false },
     user: { value: input.user ?? null, isWritable: true },
-    presaleConfig: { value: input.presaleConfig ?? null, isWritable: false },
+    presaleConfig: { value: input.presaleConfig ?? null, isWritable: true },
     activeRound: { value: input.activeRound ?? null, isWritable: false },
     userContribution: {
       value: input.userContribution ?? null,

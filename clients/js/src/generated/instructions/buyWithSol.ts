@@ -92,7 +92,7 @@ export type BuyWithSolInstruction<
         ? WritableSignerAccount<TAccountUser> & AccountSignerMeta<TAccountUser>
         : TAccountUser,
       TAccountPresaleConfig extends string
-        ? ReadonlyAccount<TAccountPresaleConfig>
+        ? WritableAccount<TAccountPresaleConfig>
         : TAccountPresaleConfig,
       TAccountActiveRound extends string
         ? ReadonlyAccount<TAccountActiveRound>
@@ -215,7 +215,7 @@ export async function getBuyWithSolInstructionAsync<
     authority: { value: input.authority ?? null, isWritable: false },
     treasury: { value: input.treasury ?? null, isWritable: true },
     user: { value: input.user ?? null, isWritable: true },
-    presaleConfig: { value: input.presaleConfig ?? null, isWritable: false },
+    presaleConfig: { value: input.presaleConfig ?? null, isWritable: true },
     activeRound: { value: input.activeRound ?? null, isWritable: false },
     userContribution: {
       value: input.userContribution ?? null,
@@ -358,7 +358,7 @@ export function getBuyWithSolInstruction<
     authority: { value: input.authority ?? null, isWritable: false },
     treasury: { value: input.treasury ?? null, isWritable: true },
     user: { value: input.user ?? null, isWritable: true },
-    presaleConfig: { value: input.presaleConfig ?? null, isWritable: false },
+    presaleConfig: { value: input.presaleConfig ?? null, isWritable: true },
     activeRound: { value: input.activeRound ?? null, isWritable: false },
     userContribution: {
       value: input.userContribution ?? null,

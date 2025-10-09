@@ -23,6 +23,8 @@ import {
   getBytesEncoder,
   getStructDecoder,
   getStructEncoder,
+  getU64Decoder,
+  getU64Encoder,
   getU8Decoder,
   getU8Encoder,
   transformEncoder,
@@ -55,6 +57,7 @@ export type PresaleConfig = {
   treasury: Address;
   currentRound: number;
   finalized: boolean;
+  totalAllocatedTokens: bigint;
   bump: number;
 };
 
@@ -63,6 +66,7 @@ export type PresaleConfigArgs = {
   treasury: Address;
   currentRound: number;
   finalized: boolean;
+  totalAllocatedTokens: number | bigint;
   bump: number;
 };
 
@@ -74,6 +78,7 @@ export function getPresaleConfigEncoder(): FixedSizeEncoder<PresaleConfigArgs> {
       ['treasury', getAddressEncoder()],
       ['currentRound', getU8Encoder()],
       ['finalized', getBooleanEncoder()],
+      ['totalAllocatedTokens', getU64Encoder()],
       ['bump', getU8Encoder()],
     ]),
     (value) => ({ ...value, discriminator: PRESALE_CONFIG_DISCRIMINATOR })
@@ -87,6 +92,7 @@ export function getPresaleConfigDecoder(): FixedSizeDecoder<PresaleConfig> {
     ['treasury', getAddressDecoder()],
     ['currentRound', getU8Decoder()],
     ['finalized', getBooleanDecoder()],
+    ['totalAllocatedTokens', getU64Decoder()],
     ['bump', getU8Decoder()],
   ]);
 }
@@ -156,5 +162,5 @@ export async function fetchAllMaybePresaleConfig(
 }
 
 export function getPresaleConfigSize(): number {
-  return 75;
+  return 83;
 }
