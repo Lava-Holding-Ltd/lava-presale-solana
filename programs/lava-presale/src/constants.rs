@@ -30,7 +30,7 @@ pub const SOL_USD_PRICE_FEED_ACCOUNT: Pubkey =
     Pubkey::from_str_const("7UVimffxr9ow1uXYxsr4LHAcV58mLzhmwaeKvJ1pjLiE");
 
 #[constant]
-pub const AUTHORITY: Pubkey = Pubkey::from_str_const("9YS6irKCxBYmYX28ifG25c8CvrKi4cmNDDptZvBxELF");
+pub const AUTHORITY: Pubkey = Pubkey::from_str_const("C4o2Cbe6RNSCyTqtLnkQZoVimapXK5xfpjRnWmEoxVeo");
 
 pub const MAX_STAGES: usize = 10;
 

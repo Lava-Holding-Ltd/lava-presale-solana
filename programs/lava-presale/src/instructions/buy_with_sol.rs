@@ -76,7 +76,7 @@ pub fn handler(
     #[cfg(feature = "devnet")]
     let maximum_age: u64 = 3000000000;
     #[cfg(not(feature = "devnet"))]
-    let maximum_age: u64 = 30;
+    let maximum_age: u64 = 60;
     // get_price_no_older_than will fail if the price update is for a different price feed.
     let feed_id: [u8; 32] =
         get_feed_id_from_hex("0xef0d8b6fda2ceba41da15d4095d1da392a0d2f8ed0c6c7bc0f4cfac8c280b56d")?; // SOL/USD feed
